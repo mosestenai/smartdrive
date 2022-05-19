@@ -1,20 +1,40 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useEffect ,useState} from "react";
+import * as SQLite from 'expo-sqlite';
+import HandleRedirection from "./handle";
 
-export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
+
+
+const db = SQLite.openDatabase('db.Userdbs') // returns Database object
+
+
+const App = () => {
+
+     const [display, setdisplay] = useState(false);
+     
+ useEffect(() => {
+    CreateTableUser();
+    
+   
+ }, []); 
+ 
+      //function to create table if does not exist
+    const CreateTableUser = () =>{
+   db.transaction(tx => {
+         tx.executeSql(
+             'CREATE TABLE IF NOT EXISTS User (id INTEGER PRIMARY KEY AUTOINCREMENT, email TEXT,username TEXT,phone TEXT, type TEXT,longitude TEXT,latitude TEXT)'
+         )
+        
+      setdisplay(true)
+     })
 }
+    
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+
+     
+     return (
+          display?
+          <HandleRedirection/>:null
+     );
+};
+
+export default App;
